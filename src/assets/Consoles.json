@@ -1,0 +1,32 @@
+[
+   {
+      "indexPosition":0,
+      "imagePath":"assets/SNES.png",
+      "consoleName":"Super Nintendo Entertainment System",
+      "shortName":"SNES"
+   },
+   {
+      "indexPosition":1,
+      "imagePath":"assets/NES.png",
+      "consoleName":"Nintendo Entertainment System",
+      "shortName":"NES"
+   },
+   {
+      "indexPosition":2,
+      "imagePath":"assets/genesis.png",
+      "consoleName":"Sega Genesis",
+      "shortName":"Genesis"
+   },
+   {
+      "indexPosition":3,
+      "imagePath":"assets/MasterSystem.png",
+      "consoleName":"Sega Master System",
+      "shortName":"SMS"
+   },
+   {
+      "indexPosition":4,
+      "imagePath":"assets/n64.png",
+      "consoleName":"Nintendo 64",
+      "shortName":"N64"
+   }
+]

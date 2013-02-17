@@ -1,0 +1,54 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+
+
+@font-face {
+	src:url("assets/Roboto-Regular.ttf");
+	fontFamily: Roboto;
+	embedAsCFF: true;
+	fontStyle: normal;
+	fontWeight: normal;
+}
+
+@font-face {
+	src:url("assets/Roboto-Bold.ttf");
+	fontFamily: Roboto;
+	embedAsCFF: true;
+	fontStyle: normal;
+	fontWeight: bold;
+}
+
+@font-face {
+	src:url("assets/Roboto-Italic.ttf");
+	fontFamily: Roboto;
+	embedAsCFF: true;
+	fontWeight: normal;
+	fontStyle: italic;
+}
+
+@font-face {
+	src:url("assets/Roboto-BoldItalic.ttf");
+	fontFamily: Roboto;
+	embedAsCFF: true;
+	fontStyle: italic;
+	fontWeight: bold;
+}
+
+s|Label.label1
+{
+
+	fontFamily: Roboto;
+	fontSize: 20;
+	textAlign: center;
+	fontWeight: normal;
+	verticalAlign: middle;
+}
+global
+{
+	font-family: Roboto;
+}
+
+
+	

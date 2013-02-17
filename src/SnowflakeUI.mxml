@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="1600" height="900" applicationComplete="init(stage)" showStatusBar="false">
+
+	<fx:Style source="style.css"/>
+	
+	
+	<fx:Script source="Snowflake/UI/SnowflakeUI.as"/>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0" duration="{effectDuration}"
+				effectEnd="fadeOut_effectEndHandler(event)" target="{image}" effectStart="fadeOut_effectStartHandler(event)"/>
+		<s:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0" duration="{effectDuration}" target="{image}" effectEnd="fadeIn_effectEndHandler(event)"/>
+		
+	</fx:Declarations>
+	
+
+	<mx:ViewStack id="viewstack1" width="100%" height="100%" horizontalCenter="0" verticalCenter="-1">
+		<s:NavigatorContent width="100%" height="100%" label="ConsoleMenu">
+			<s:Label id="label" width="1588" height="75" horizontalCenter="0" styleName="label1"
+					 text="Label" verticalCenter="-287"/>
+			
+			
+			<s:Image id="image" width="50%" height="50%" horizontalCenter="0" scaleMode="letterbox"
+					 smooth="true" smoothingQuality="high"
+					 verticalCenter="0"/>
+			<s:Group width="1400" height="200" horizontalCenter="0" textAlign="center"
+					 verticalCenter="308">
+				<s:Label id="consoleLeft" x="10" width="33%" height="80%" fontSize="50" text="Label"
+						 verticalAlign="middle" verticalCenter="0"/>
+				<s:Label id="consoleCenter" x="448.9" width="33%" height="80%" fontSize="50"
+						 fontWeight="bold" text="Label" verticalAlign="middle" verticalCenter="0"/>
+				<s:Label id="consoleRight" x="897.6" width="33%" height="80%" fontSize="50"
+						 text="Label" verticalAlign="middle" verticalCenter="-4"/>
+			</s:Group>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" label="RomMenu">
+		</s:NavigatorContent>
+		
+		
+	</mx:ViewStack>
+	
+</s:WindowedApplication>
