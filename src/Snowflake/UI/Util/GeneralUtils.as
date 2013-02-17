@@ -7,6 +7,18 @@ package Snowflake.UI.Util
 		{
 		}
 		
+		
+		public static function getArrayLength(array:Array):int{
+			//We start counting at -1 because Array is zero relative
+			var count:int = -1;
+			
+			for each (var object:Object in array){
+				count++
+			}
+			
+			return count;
+		}
+		
 		/**
 		 * Appends "[Snowflake.UI.Skin]" to a string to log
 		 * @param log String to log

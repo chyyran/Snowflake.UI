@@ -1,6 +1,13 @@
+
 import Snowflake.UI.Datastructures.Console;
+import Snowflake.UI.Datastructures.SnowflakeSettings;
 import Snowflake.UI.Util.*;
+
+import com.greensock.events.LoaderEvent;
+import com.greensock.loading.*;
+import com.greensock.loading.display.FlexContentDisplay;
 import com.rational.serialization.json.JSON;
+
 import flash.display.*;
 import flash.events.*;
 import flash.filesystem.*;
@@ -9,8 +16,13 @@ import flash.ui.Keyboard;
 
 import mx.events.EffectEvent;
 
-[Bindable("effectDuration")]
-private var effectDuration:Number = 250;
+import spark.components.Group;
+
+[Bindable("fadeInDuration")]
+private var fadeInDuration:Number = 500;
+[Bindable("fadeOutDuration")]
+private var fadeOutDuration:Number = 250;
+
 public var skinName:String="Snowflake_Default";
 private var jsonConsoles:String;
 private var arrayLength:int;
@@ -22,31 +34,31 @@ private var inTransition:Boolean = false;
 
 
 
+
+
 /**
  * Gets the zero-relative length of a given array
  * @param array Any array
  * @return The length of the array
  */
-private function getArrayLength(array:Array):int{
-	//We start counting at -1 because Array is zero relative
-	var count:int = -1;
-	for each (var object:Object in array){
-		count++
-	}
-	
-	return count;
-}
+
 
 private function init(stage:Stage):void{
 	
 	GeneralUtils.skinLog("SnowflakeUI Loaded at "+ dateCode);
 	GeneralUtils.skinLog("Skin name is "+skinName);
-	//stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
-	//GeneralUtils.skinLog("Display State = Fullscreen");
-	stage.addChild(new FPSCounter(10,10,0x000000,false,0x000000));
-	GeneralUtils.skinLog("FPS Counter initialized");
 	stage.nativeWindow.maximize();
 	GeneralUtils.skinLog("Display State = Maximized Window");
+	
+	//stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+	//GeneralUtils.skinLog("Display State = Fullscreen");
+	
+	stage.addChild(new FPSCounter(10,10,0x000000,false,0x000000));
+	
+	//load background
+	//loadSWF(backgroundArea,"assets/snowflakebg.swf");
+	
+	GeneralUtils.skinLog("FPS Counter initialized");
 	stage.addEventListener(KeyboardEvent.KEY_DOWN,keyDown);
 	GeneralUtils.skinLog("Keyboard event listener hooked");
 	//trace(loadJson());
@@ -55,12 +67,11 @@ private function init(stage:Stage):void{
 	ConsoleUtils.insertConsole(new Console("assets/genesis.png","Sega Genesis","Genesis",2),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/MasterSystem.png","Sega Master System","SMS",3),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/n64.png","Nintendo 64","N64",4),consoleArray);
-	arrayLength = getArrayLength(consoleArray);
+	arrayLength = consoleArray.length - 1
 	GeneralUtils.skinLog("Inserted "+String(arrayLength+1)+" consoles");
 	GeneralUtils.skinLog("Final ArrayLength is "+String(arrayLength));
+	
 	updateConsole();
-	
-	
 }
 
 protected function FadeBtn_clickHandler(event:MouseEvent):void
@@ -134,16 +145,21 @@ private function keyDown(event:KeyboardEvent):void
 		if(event.keyCode == 39){
 			selectedIndex++
 				fadeOut.play();
-		}}
+		}
+	}
 	if( event.keyCode == Keyboard.ESCAPE )
 	{
 		event .preventDefault();
 	}
-	
-	
-	
 }
 
 
-
+private function loadSWF(displayArea:Group,path:String):void{
+	var swfLoader:SWFLoader;
+	LoaderMax.contentDisplayClass = FlexContentDisplay;
+	LoaderMax.activate([SWFLoader]);
+	var url:String = path;
+	swfLoader = new SWFLoader(url,{x:50, y:50, container:displayArea, noCache:true });
+	swfLoader.load(); 
+}
 
