@@ -2,6 +2,7 @@ package Snowflake.UI.Util
 {
 	public class ConsoleUtils
 	{
+		import mx.collections.ArrayCollection;
 		import Snowflake.UI.Datastructures.Console;
 		public function ConsoleUtils()
 		{

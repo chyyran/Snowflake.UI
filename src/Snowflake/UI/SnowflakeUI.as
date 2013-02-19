@@ -1,5 +1,6 @@
 
 import Snowflake.UI.Datastructures.Console;
+import Snowflake.UI.Datastructures.Game;
 import Snowflake.UI.Datastructures.SnowflakeSettings;
 import Snowflake.UI.Util.*;
 
@@ -14,9 +15,11 @@ import flash.filesystem.*;
 import flash.net.*;
 import flash.ui.Keyboard;
 
+import mx.collections.ArrayCollection;
 import mx.events.EffectEvent;
 
 import spark.components.Group;
+import spark.events.IndexChangeEvent;
 
 [Bindable("fadeInDuration")]
 private var fadeInDuration:Number = 500;
@@ -31,7 +34,8 @@ public var consoleArray:Array = new Array();
 public var todayDate:Date = new Date();
 public var dateCode:String = todayDate.month+"."+todayDate.date+"."+todayDate.fullYear+" "+todayDate.hours+":"+todayDate.minutes+":"+todayDate.seconds+"_"+todayDate.timezoneOffset;
 private var inTransition:Boolean = false;
-
+[Bindable("listArray")]
+private var listArray:ArrayCollection = new ArrayCollection();
 
 
 
@@ -50,6 +54,7 @@ private function init(stage:Stage):void{
 	stage.nativeWindow.maximize();
 	GeneralUtils.skinLog("Display State = Maximized Window");
 	
+	
 	//stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 	//GeneralUtils.skinLog("Display State = Fullscreen");
 	
@@ -62,16 +67,24 @@ private function init(stage:Stage):void{
 	stage.addEventListener(KeyboardEvent.KEY_DOWN,keyDown);
 	GeneralUtils.skinLog("Keyboard event listener hooked");
 	//trace(loadJson());
-	ConsoleUtils.insertConsole(new Console("assets/SNES.png","Super Nintendo Entertainment System","SNES",0),consoleArray);
+
+	var gameListTest:Array = new Array();
+	gameListTest.push(new Game("Super Mario World","SMW is a platformer",1990,"assets/smwcover.png","c:/snes/smw.smc"));
+	gameListTest.push(new Game("Super Mario World 2","SMW 2 is a platformer",1990,"assets/smwcover.png","c:/snes/smw.smc"));
+	ConsoleUtils.insertConsole(new Console("assets/SNES.png","Super Nintendo Entertainment System","SNES",0,gameListTest),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/NES.png","Nintendo Entertainment System","NES",1),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/genesis.png","Sega Genesis","Genesis",2),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/MasterSystem.png","Sega Master System","SMS",3),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/n64.png","Nintendo 64","N64",4),consoleArray);
-	arrayLength = consoleArray.length - 1
-	GeneralUtils.skinLog("Inserted "+String(arrayLength+1)+" consoles");
+	//array.length is not zero indexed, so we subtract one.
+	arrayLength = consoleArray.length - 1;
 	GeneralUtils.skinLog("Final ArrayLength is "+String(arrayLength));
-	
+	GeneralUtils.skinLog("Inserted "+String(arrayLength+1)+" consoles");
 	updateConsole();
+	listArray = new ArrayCollection(gameListTest);
+	list.dataProvider = listArray;
+	RomMenuUtils.refreshRomMenu(0,listArray,gameCover,descriptionBox);
+	
 }
 
 protected function FadeBtn_clickHandler(event:MouseEvent):void
@@ -138,13 +151,24 @@ protected function fadeIn_effectEndHandler(event:EffectEvent):void
 private function keyDown(event:KeyboardEvent):void
 {
 	if(!inTransition){
-		if(event.keyCode == 37){
+		if(event.keyCode == Keyboard.LEFT){
 			selectedIndex--
 				fadeOut.play();
 		}
-		if(event.keyCode == 39){
+		if(event.keyCode == Keyboard.RIGHT){
 			selectedIndex++
 				fadeOut.play();
+		}
+	}
+	
+	if(event.shiftKey){
+		switch ( event.keyCode )
+		{
+			case Keyboard.BACKSPACE : 
+				
+				MenuContainer.selectedChild = RomMenu;
+				
+				break;
 		}
 	}
 	if( event.keyCode == Keyboard.ESCAPE )
@@ -159,7 +183,16 @@ private function loadSWF(displayArea:Group,path:String):void{
 	LoaderMax.contentDisplayClass = FlexContentDisplay;
 	LoaderMax.activate([SWFLoader]);
 	var url:String = path;
-	swfLoader = new SWFLoader(url,{x:50, y:50, container:displayArea, noCache:true });
+	swfLoader = new SWFLoader(url,{x:0, y:0, container:displayArea, noCache:true });
 	swfLoader.load(); 
+}
+
+private function myLabelFunc(game:Game):String {
+	return game.gameName
+}
+
+private function updateList(event:IndexChangeEvent):void{
+	trace(Game(list.selectedItem).gameName);
+	RomMenuUtils.refreshRomMenu(list.selectedIndex,listArray,gameCover,descriptionBox);
 }
 

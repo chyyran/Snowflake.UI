@@ -2,35 +2,48 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
 					   xmlns:s="library://ns.adobe.com/flex/spark"
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
-					   width="1920" height="1080" applicationComplete="init(stage)"
+					   width="1280" height="720" applicationComplete="init(stage)"
 					   showStatusBar="false" frameRate="30">
 	
 	<fx:Style source="style.css"/>
-	
 	
 	<fx:Script source="Snowflake/UI/SnowflakeUI.as"/>
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<!--Fade Definitions-->
 		<s:Fade id="fadeOut" alphaFrom="1.0" alphaTo="0.0" duration="{fadeOutDuration}"
 				effectEnd="fadeOut_effectEndHandler(event)" target="{image}" effectStart="fadeOut_effectStartHandler(event)"/>
 		<s:Fade id="fadeIn" alphaFrom="0.0" alphaTo="1.0" duration="{fadeInDuration}" target="{image}" effectEnd="fadeIn_effectEndHandler(event)"/>
 		
+		<s:ArrayCollection id="myDP">
+			<s:source>
+				<fx:Object label="AL" data="Montgomery"/>
+				<fx:Object label="AK" data="Juneau"/>
+				<fx:Object label="AR" data="Little Rock"/>
+			</s:source>
+		</s:ArrayCollection>  
+		
 	</fx:Declarations>
 	
+	<!--Start Background-->
 	<s:Rect id="background" width="100%" height="100%" horizontalCenter="0" verticalCenter="0">
-		<s:fill>
+		<!--<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0xdad6d6"/>
 				<s:GradientEntry color="0xf1f1f1"/>
 			</s:LinearGradient>
-		</s:fill>
+		</s:fill>-->
 	</s:Rect>
+	<!--The background SWF is loaded in this group-->
 	<s:Group id="backgroundArea" width="1920" height="1080" horizontalCenter="0" verticalCenter="0"/>
-
-	<mx:ViewStack id="viewstack1" width="100%" height="100%" horizontalCenter="0" verticalCenter="-1">
+	<!--End Background-->
+	
+	<!--Start Main Window-->
+	<mx:ViewStack id="MenuContainer" width="100%" height="100%" horizontalCenter="0" verticalCenter="-1">
 		
-		<s:NavigatorContent width="100%" height="100%" label="ConsoleMenu">
+		<!--Start Console Selection Menu-->
+		<s:NavigatorContent width="100%" height="100%" label="ConsoleMenu" id="ConsoleMenu" >
 			<s:Label id="label" width="1588" height="75" horizontalCenter="0" styleName="label1"
 					 text="Label" verticalCenter="-287"/>
 			
@@ -38,21 +51,43 @@
 			<s:Image id="image" width="50%" height="50%" horizontalCenter="0" scaleMode="letterbox"
 					 smooth="true" smoothingQuality="high"
 					 verticalCenter="0"/>
+			
+			<!--Start Bottom Labels-->
 			<s:Group width="1400" height="200" horizontalCenter="0" textAlign="center"
 					 verticalCenter="308">
-				<s:Label id="consoleLeft" x="10" width="33%" height="80%" fontSize="50" text="Label"
-						 verticalAlign="middle" verticalCenter="0"/>
-				<s:Label id="consoleCenter" x="448.9" width="33%" height="80%" fontSize="50"
-						 fontWeight="bold" text="Label" verticalAlign="middle" verticalCenter="0"/>
-				<s:Label id="consoleRight" x="897.6" width="33%" height="80%" fontSize="50"
-						 text="Label" verticalAlign="middle" verticalCenter="-4"/>
+				<s:Label id="consoleLeft" left="30" width="33%" height="80%" fontSize="50"
+						 text="Label" verticalAlign="middle" verticalCenter="0"/>
+				<s:Label id="consoleCenter" width="33%" height="80%" fontSize="50" fontWeight="bold"
+						 horizontalCenter="0" text="Label" verticalAlign="middle"
+						 verticalCenter="0"/>
+				<s:Label id="consoleRight" right="30" width="33%" height="80%" fontSize="50"
+						 text="Label" verticalAlign="middle" verticalCenter="0"/>
 			</s:Group>
+			<!--End Bottom Labels-->
 			
 		</s:NavigatorContent>
-		<s:NavigatorContent width="100%" height="100%" label="RomMenu">
+		<!--End Console Selection Menu-->
+		
+ 
+		
+		<s:NavigatorContent width="100%" height="100%" label="RomMenu" id="RomMenu" creationPolicy="all">
+			<s:List id="list" x="850" top="62" bottom="256" width="30%" dataProvider="{listArray}" labelFunction="myLabelFunc"
+					verticalCenter="-97" requireSelection="true" change="updateList(event)"/>
+			    
+
+			
+			<s:Group x="30" y="30" width="60%" height="80%">
+				<s:Image id="gameCover" left="20" top="20" bottom="30" width="55%"/>
+				<s:TextArea id="descriptionBox" right="20" top="20" width="40%" height="38%"/>
+				<s:Image  right="20" bottom="30" width="40%" height="30%"/>
+				<s:Group right="20" width="40%" height="20%" verticalCenter="20">
+				</s:Group>
+			</s:Group>
+			<s:Label y="516" right="36" width="390" height="104" fontSize="36" text="Label"/>
 		</s:NavigatorContent>
 		
 		
 	</mx:ViewStack>
-	
+	<!--End Main Window-->
+
 </s:WindowedApplication>
