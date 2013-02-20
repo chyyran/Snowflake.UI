@@ -36,7 +36,7 @@
 	fontWeight: bold;
 }
 
-s|Label.label1
+s|Label.debugLabel
 {
 
 	fontFamily: Roboto;
@@ -48,6 +48,19 @@ s|Label.label1
 global
 {
 	font-family: Roboto;
+}
+
+s|List{
+	contentBackgroundAlpha : 0.4;
+	fontSize: 20;
+}
+
+s|TextArea.GameDescription
+{ 
+	focusAlpha: 0;
+	contentBackgroundAlpha : 0.4;
+	fontSize: 20;
+	color: #000000;
 }
 
 

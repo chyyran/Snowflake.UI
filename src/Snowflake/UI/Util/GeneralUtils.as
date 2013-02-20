@@ -2,7 +2,11 @@ package Snowflake.UI.Util
 {
 	public class GeneralUtils
 	{
+		import com.greensock.events.LoaderEvent;
+		import com.greensock.loading.*;
+		import com.greensock.loading.display.FlexContentDisplay;
 		import flash.filesystem.*;
+		import spark.components.*;
 		public function GeneralUtils()
 		{
 		}
@@ -43,6 +47,15 @@ package Snowflake.UI.Util
 			return content;
 		}
 
+		public static function loadSWF(displayArea:Group,path:String):void{
+			var swfLoader:SWFLoader;
+			LoaderMax.contentDisplayClass = FlexContentDisplay;
+			LoaderMax.activate([SWFLoader]);
+			var url:String = path;
+			swfLoader = new SWFLoader(url,{x:0, y:0, container:displayArea, noCache:true });
+			swfLoader.load(); 
+		}
+		
 		
 	}
 }

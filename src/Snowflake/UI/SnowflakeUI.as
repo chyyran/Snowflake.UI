@@ -4,9 +4,6 @@ import Snowflake.UI.Datastructures.Game;
 import Snowflake.UI.Datastructures.SnowflakeSettings;
 import Snowflake.UI.Util.*;
 
-import com.greensock.events.LoaderEvent;
-import com.greensock.loading.*;
-import com.greensock.loading.display.FlexContentDisplay;
 import com.rational.serialization.json.JSON;
 
 import flash.display.*;
@@ -61,37 +58,33 @@ private function init(stage:Stage):void{
 	stage.addChild(new FPSCounter(10,10,0x000000,false,0x000000));
 	
 	//load background
-	//loadSWF(backgroundArea,"assets/snowflakebg.swf");
+	GeneralUtils.loadSWF(backgroundArea,"assets/snowflakebg.swf");
 	
 	GeneralUtils.skinLog("FPS Counter initialized");
 	stage.addEventListener(KeyboardEvent.KEY_DOWN,keyDown);
 	GeneralUtils.skinLog("Keyboard event listener hooked");
 	//trace(loadJson());
 
-	var gameListTest:Array = new Array();
-	gameListTest.push(new Game("Super Mario World","SMW is a platformer",1990,"assets/smwcover.png","c:/snes/smw.smc"));
-	gameListTest.push(new Game("Super Mario World 2","SMW 2 is a platformer",1990,"assets/smwcover.png","c:/snes/smw.smc"));
-	ConsoleUtils.insertConsole(new Console("assets/SNES.png","Super Nintendo Entertainment System","SNES",0,gameListTest),consoleArray);
+	ConsoleUtils.insertConsole(new Console("assets/SNES.png","Super Nintendo Entertainment System","SNES",0),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/NES.png","Nintendo Entertainment System","NES",1),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/genesis.png","Sega Genesis","Genesis",2),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/MasterSystem.png","Sega Master System","SMS",3),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/n64.png","Nintendo 64","N64",4),consoleArray);
+	var gameListTest:Array = new Array();
+	gameListTest.push(new Game("Super Mario World","c:/snes/smw.smc","SMW is a platformer","1990","assets/smwcover.png","Unknown",Game.getConsoleByShortname(consoleArray,"SNES")));
+	gameListTest.push(new Game("Super Mario World 2","c:/snes/smw.smc","SMW 2 is a platformer","1990","assets/smwcover.png","Unknown",Game.getConsoleByShortname(consoleArray,"SNES")));
+	
 	//array.length is not zero indexed, so we subtract one.
 	arrayLength = consoleArray.length - 1;
 	GeneralUtils.skinLog("Final ArrayLength is "+String(arrayLength));
 	GeneralUtils.skinLog("Inserted "+String(arrayLength+1)+" consoles");
 	updateConsole();
 	listArray = new ArrayCollection(gameListTest);
-	list.dataProvider = listArray;
-	RomMenuUtils.refreshRomMenu(0,listArray,gameCover,descriptionBox);
+	refreshRomMenu(0,true);
+
 	
 }
 
-protected function FadeBtn_clickHandler(event:MouseEvent):void
-{
-	
-	fadeOut.play();
-}
 
 /**
  * Updates the console on the screen depending on selectedIndex
@@ -128,6 +121,12 @@ private function updateConsole():void{
 	consoleRight.text=Console(consoleArray[rightIndex]).shortName;
 	label.text=debugText;
 	image.source=Console(consoleArray[selectedIndex]).imagePath;
+}
+
+protected function FadeBtn_clickHandler(event:MouseEvent):void
+{
+	
+	fadeOut.play();
 }
 
 protected function fadeOut_effectEndHandler(event:EffectEvent):void
@@ -178,21 +177,28 @@ private function keyDown(event:KeyboardEvent):void
 }
 
 
-private function loadSWF(displayArea:Group,path:String):void{
-	var swfLoader:SWFLoader;
-	LoaderMax.contentDisplayClass = FlexContentDisplay;
-	LoaderMax.activate([SWFLoader]);
-	var url:String = path;
-	swfLoader = new SWFLoader(url,{x:0, y:0, container:displayArea, noCache:true });
-	swfLoader.load(); 
-}
-
-private function myLabelFunc(game:Game):String {
+private function getGameLabel(game:Game):String {
 	return game.gameName
 }
 
 private function updateList(event:IndexChangeEvent):void{
-	trace(Game(list.selectedItem).gameName);
-	RomMenuUtils.refreshRomMenu(list.selectedIndex,listArray,gameCover,descriptionBox);
+	refreshRomMenu(list.selectedIndex);
 }
 
+private function refreshRomMenu(index:int,refreshDataProvider:Boolean=false):void{
+	if(refreshDataProvider){
+		list.dataProvider = listArray;
+	}
+	var game:Game = Game(listArray[index]);
+	gameCover.source=game.coverPath;
+	releaseYearLabel.text="Release Year: "+game.releaseYear;
+	descriptionBox.text=game.gameDescription;
+	gameTitleLabel.text=game.gameName;
+	publisherLabel.text="Publisher: "+game.publisherName;
+	try{
+	consoleLabel.text = "Console: "+game.console.consoleName;
+	}catch(error:Error){
+	consoleLabel.text = "Console: Unknown";
+	}
+	
+}
