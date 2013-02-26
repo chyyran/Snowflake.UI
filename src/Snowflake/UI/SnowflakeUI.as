@@ -4,8 +4,10 @@ import Snowflake.UI.Datastructures.Game;
 import Snowflake.UI.Datastructures.SnowflakeSettings;
 import Snowflake.UI.Util.*;
 
+
 import com.rational.serialization.json.JSON;
 
+import flash.utils.ByteArray;
 import flash.display.*;
 import flash.events.*;
 import flash.filesystem.*;
@@ -28,8 +30,6 @@ private var jsonConsoles:String;
 private var arrayLength:int;
 public var selectedIndex:int = 0;
 public var consoleArray:Array = new Array();
-public var todayDate:Date = new Date();
-public var dateCode:String = todayDate.month+"."+todayDate.date+"."+todayDate.fullYear+" "+todayDate.hours+":"+todayDate.minutes+":"+todayDate.seconds+"_"+todayDate.timezoneOffset;
 private var inTransition:Boolean = false;
 [Bindable("listArray")]
 private var listArray:ArrayCollection = new ArrayCollection();
@@ -46,7 +46,7 @@ private var listArray:ArrayCollection = new ArrayCollection();
 
 private function init(stage:Stage):void{
 	
-	GeneralUtils.skinLog("SnowflakeUI Loaded at "+ dateCode);
+	GeneralUtils.skinLog("SnowflakeUI Loaded at "+ GeneralUtils.getDateString());
 	GeneralUtils.skinLog("Skin name is "+skinName);
 	stage.nativeWindow.maximize();
 	GeneralUtils.skinLog("Display State = Maximized Window");
@@ -71,17 +71,18 @@ private function init(stage:Stage):void{
 	ConsoleUtils.insertConsole(new Console("assets/MasterSystem.png","Sega Master System","SMS",3),consoleArray);
 	ConsoleUtils.insertConsole(new Console("assets/n64.png","Nintendo 64","N64",4),consoleArray);
 	var gameListTest:Array = new Array();
-	gameListTest.push(new Game("Super Mario World","c:/snes/smw.smc","SMW is a platformer","1990","assets/smwcover.png","Unknown",Game.getConsoleByShortname(consoleArray,"SNES")));
-	gameListTest.push(new Game("Super Mario World 2","c:/snes/smw.smc","SMW 2 is a platformer","1990","assets/smwcover.png","Unknown",Game.getConsoleByShortname(consoleArray,"SNES")));
+	gameListTest.push(new Game("Super Mario World","c:/snes/smw.smc","SMW is a platformer","1990","assets/smwcover.png","Nintendo",Game.getConsoleByShortname(consoleArray,"SNES")));
+	gameListTest.push(new Game("Super Mario World 2","c:/snes/smw.smc","SMW 2 is not a real game","1990","assets/smwcover.png","Unknown",Game.getConsoleByShortname(consoleArray,"SNES")));
 	
 	//array.length is not zero indexed, so we subtract one.
 	arrayLength = consoleArray.length - 1;
 	GeneralUtils.skinLog("Final ArrayLength is "+String(arrayLength));
 	GeneralUtils.skinLog("Inserted "+String(arrayLength+1)+" consoles");
 	updateConsole();
+	socketListen();
 	listArray = new ArrayCollection(gameListTest);
 	refreshRomMenu(0,true);
-
+	
 	
 }
 
@@ -176,7 +177,6 @@ private function keyDown(event:KeyboardEvent):void
 	}
 }
 
-
 private function getGameLabel(game:Game):String {
 	return game.gameName
 }
@@ -201,4 +201,56 @@ private function refreshRomMenu(index:int,refreshDataProvider:Boolean=false):voi
 	consoleLabel.text = "Console: Unknown";
 	}
 	
+}
+
+var socket:Socket = new Socket();
+
+public function socketListen():void
+{
+	
+	this.socket.addEventListener(Event.CONNECT, onConnect);
+	this.socket.addEventListener(Event.CLOSE, onClose);
+	this.socket.addEventListener(IOErrorEvent.IO_ERROR, onError);
+	this.socket.addEventListener(ProgressEvent.SOCKET_DATA, onResponse);
+	this.socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecError);
+	
+	this.socket.connect("localhost",6993);
+	
+	
+	
+}
+
+function onConnect(e:Event):void {
+	
+	GeneralUtils.skinLog("Connected to Socket");
+	
+	//this.socket.writeUTFBytes("TestCommand:0")
+	this.socket.writeUTFBytes("TestCommand\n")
+	//this.socket.writeUTFBytes("\nThis is a second string");
+}
+
+function onClose(e:Event):void {
+	// Security error is thrown if this line is excluded
+	this.socket.close();
+}
+
+function onError(e:IOErrorEvent):void {
+	trace("IO Error: "+e);
+}
+
+function onSecError(e:SecurityErrorEvent):void {
+	trace("Security Error: "+e);
+}
+
+function onResponse(e:ProgressEvent):void {
+	if (this.socket.bytesAvailable>0) {
+		trace(this.socket.readUTFBytes(this.socket.bytesAvailable));
+	}
+	
+}
+
+function getByteLength (s:String):Number {
+	var byteArray:ByteArray = new ByteArray();
+	byteArray.writeUTFBytes(s);
+	return byteArray.length;
 }

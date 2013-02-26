@@ -5,7 +5,9 @@ package Snowflake.UI.Util
 		import com.greensock.events.LoaderEvent;
 		import com.greensock.loading.*;
 		import com.greensock.loading.display.FlexContentDisplay;
+		
 		import flash.filesystem.*;
+		
 		import spark.components.*;
 		public function GeneralUtils()
 		{
@@ -56,6 +58,23 @@ package Snowflake.UI.Util
 			swfLoader.load(); 
 		}
 		
+		public static function getDateString():String{
+			var todayDate:Date = new Date();
+			var dateCode:String = todayDate.month+"."+todayDate.date+"."+todayDate.fullYear+" "+todayDate.hours+":"+todayDate.minutes+":"+todayDate.seconds+" (UTC "+getUTCOffset(todayDate.timezoneOffset)+")";
+			return dateCode;
+		}
+		
+		private static function getUTCOffset(timezoneOffset:int):String{
+			var utcOffset:int = timezoneOffset/60-2*timezoneOffset/60;
+			var formattedOffset:String;
+			if (utcOffset >=0){
+				formattedOffset = "+"+utcOffset+":00";
+			}else{
+				formattedOffset = utcOffset+":00";
+			}
+			return formattedOffset
+		}
 		
 	}
+
 }
